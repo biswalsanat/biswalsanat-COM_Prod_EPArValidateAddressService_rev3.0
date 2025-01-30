@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.edgepark.com/ErrorHandlingProcess/1.0" xmlns="http://xmlns.edgepark.com/ErrorHandlingProcess/1.0" elementFormDefault="qualified" attributeFormDefault="qualified">
+   <xs:element name="EPComnErrorDetails">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="EPComnErrorDetail" type="EPComnErrorDetail"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+   <xs:complexType name="EPComnErrorDetail">
+      <xs:sequence>
+         <xs:element name="ErrorBatchKey" type="xs:string"/>
+         <xs:element name="BusinessProcessName" type="xs:string"/>
+         <xs:element name="BusinessProcessEntity" type="xs:string"/>
+         <xs:element name="BusinessProcessId1" type="xs:string"/>
+         <xs:element name="BusinessProcessId2" type="xs:string"/>
+         <xs:element name="BusinessProcessId3" type="xs:string"/>
+         <xs:element name="BusinessProcessId4" type="xs:string"/>
+         <xs:element name="BusinessProcessId5" type="xs:string"/>
+         <xs:element name="BusinessProcessStep" type="xs:string"/>
+         <xs:element name="SystemName" type="xs:string"/>
+         <xs:element name="ErrorCode" type="xs:string"/>
+         <xs:element name="ErrorDescription" type="xs:string"/>
+         <xs:element name="ErrorText" type="xs:string"/>
+         <xs:element name="ErrorType" type="xs:string"/>
+         <xs:element name="ErrorSeverity" type="xs:string"/>
+         <xs:element name="ErrorDateTime" type="xs:string"/>
+         <xs:element name="NotificationFlag" type="xs:string"/>
+         <xs:element name="NotificationDestination" type="xs:string"/>
+         <xs:element name="Attribute1" type="xs:string"/>
+         <xs:element name="Attribute2" type="xs:string"/>
+         <xs:element name="Attribute3" type="xs:string"/>
+         <xs:element name="Attribute4" type="xs:string"/>
+         <xs:element name="Attribute5" type="xs:string"/>
+         <xs:element name="Attribute6" type="xs:string"/>
+         <xs:element name="Attribute7" type="xs:string"/>
+         <xs:element name="Attribute8" type="xs:string"/>
+         <xs:element name="Attribute9" type="xs:string"/>
+         <xs:element name="Attribute10" type="xs:string"/>
+         <xs:element name="CreationDate" type="xs:string"/>
+         <xs:element name="CreatedBy" type="xs:string"/>
+         <xs:element name="LastUpdateDate" type="xs:string"/>
+         <xs:element name="LastUpdateBy" type="xs:string"/>
+         <xs:element name="LastUpdatedLogin" type="xs:string"/>
+         <xs:element name="RequestId" type="xs:string"/>
+         <xs:element name="Org" type="xs:string"/>
+         <xs:element name="Source" type="xs:string"/>
+         <xs:element name="UpdateFlag" type="xs:string"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="EPComnErrorSummary">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="ErrorBatchKey" type="xs:string"/>
+            <xs:element name="BusinessProcessName" type="xs:string"/>
+            <xs:element name="BatchFileName" type="xs:string"/>
+            <xs:element name="DataFileName" type="xs:string"/>
+            <xs:element name="TotalRecords" type="xs:string"/>
+            <xs:element name="TotalProcessedRecords" type="xs:string"/>
+            <xs:element name="TotalCustValFailedRecords" type="xs:string"/>
+            <xs:element name="TotalBusValFailedRecords" type="xs:string"/>
+            <xs:element name="BatchStatus" type="xs:string"/>
+            <xs:element name="ProcessFlag" type="xs:string"/>
+            <xs:element name="NotificationDest" type="xs:string"/>
+            <xs:element name="Attribute1" type="xs:string"/>
+            <xs:element name="Attribute2" type="xs:string"/>
+            <xs:element name="Attribute3" type="xs:string"/>
+            <xs:element name="Attribute4" type="xs:string"/>
+            <xs:element name="Attribute5" type="xs:string"/>
+            <xs:element name="Attribute6" type="xs:string"/>
+            <xs:element name="Attribute7" type="xs:string"/>
+            <xs:element name="Attribute8" type="xs:string"/>
+            <xs:element name="Attribute9" type="xs:string"/>
+            <xs:element name="Attribute10" type="xs:string"/>
+            <xs:element name="CreatedBy" type="xs:string"/>
+            <xs:element name="LastUpdateDate" type="xs:string"/>
+            <xs:element name="LastUpdateBy" type="xs:string"/>
+            <xs:element name="LastUpdatedLogin" type="xs:string"/>
+            <xs:element name="RequestId" type="xs:string"/>
+            <xs:element name="Org" type="xs:string"/>
+            <xs:element name="Source" type="xs:string"/>
+            <xs:element name="Instance" type="xs:string"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+</xs:schema>

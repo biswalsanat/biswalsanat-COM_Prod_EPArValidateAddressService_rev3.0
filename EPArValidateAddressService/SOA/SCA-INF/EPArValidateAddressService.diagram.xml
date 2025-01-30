@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dgm:gDiagram xmlns:dgm="http://xmlns.oracle.com/sca/soadgm">
+    <dgm:gService name="client">
+        <dgm:body borderWidth="2" arcRad="20" X="21" Y="145" width="137" height="84">
+            <dgm:borderColor r="153" g="153" b="153"/>
+            <dgm:bgColor r="255" g="255" b="255"/>
+        </dgm:body>
+        <dgm:shadow arcRad="20" X="11" Y="138" width="156" height="98">
+            <dgm:bgColor r="196" g="228" b="240"/>
+        </dgm:shadow>
+        <dgm:outputPort name="client" X="127" Y="0" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/EPArValidateAddressService#wsdl.interface(EPArValidateAddressService)"/>
+        <dgm:nodeIcon URI="/oracle/tip/tools/ide/adapters/designtime/adapter/images/soap_service_20x20.png" X="20" Y="4" width="20" height="20"/>
+        <dgm:operations>
+            <dgm:item>process</dgm:item>
+        </dgm:operations>
+    </dgm:gService>
+    <dgm:gReference name="ErrorHandler">
+        <dgm:body borderWidth="2" arcRad="20" X="686" Y="26" width="136" height="84">
+            <dgm:borderColor r="153" g="153" b="153"/>
+            <dgm:bgColor r="255" g="255" b="255"/>
+        </dgm:body>
+        <dgm:shadow arcRad="20" X="676" Y="19" width="156" height="98">
+            <dgm:bgColor r="196" g="228" b="240"/>
+        </dgm:shadow>
+        <dgm:inputPort name="ErrorHandler" X="-10" Y="0" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/pcbpel/adapter/jms/Basic/EPArValidateAddressService/ErrorHandler#wsdl.interface(Produce_Message_ptt)"/>
+        <dgm:nodeIcon URI="/oracle/tip/tools/ide/adapters/designtime/adapter/images/jms_adapter_20x20.png" X="27" Y="4" width="20" height="20"/>
+        <dgm:operations>
+            <dgm:item>Produce_Message</dgm:item>
+        </dgm:operations>
+    </dgm:gReference>
+    <dgm:gReference name="CallAddressValidationREST">
+        <dgm:body borderWidth="2" arcRad="20" X="686" Y="144" width="136" height="84">
+            <dgm:borderColor r="153" g="153" b="153"/>
+            <dgm:bgColor r="255" g="255" b="255"/>
+        </dgm:body>
+        <dgm:shadow arcRad="20" X="676" Y="137" width="156" height="98">
+            <dgm:bgColor r="196" g="228" b="240"/>
+        </dgm:shadow>
+        <dgm:inputPort name="CallAddressValidationREST" X="-10" Y="0" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/EpArAddressValidationRESTAPI/EpArValidateAddressService/CallAddressValidationREST#wsdl.interface(CallAddressValidationREST_ptt)"/>
+        <dgm:nodeIcon URI="/oracle/tip/tools/ide/adapters/designtime/adapter/images/RestAdapterService20x20px.png" X="27" Y="4" width="20" height="20"/>
+        <dgm:operations>
+            <dgm:item>GetJSONBestMatches</dgm:item>
+        </dgm:operations>
+    </dgm:gReference>
+    <dgm:gReference name="CallToken">
+        <dgm:body borderWidth="2" arcRad="20" X="686" Y="262" width="136" height="84">
+            <dgm:borderColor r="153" g="153" b="153"/>
+            <dgm:bgColor r="255" g="255" b="255"/>
+        </dgm:body>
+        <dgm:shadow arcRad="20" X="676" Y="255" width="156" height="98">
+            <dgm:bgColor r="196" g="228" b="240"/>
+        </dgm:shadow>
+        <dgm:inputPort name="CallToken" X="-10" Y="0" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/PDE/EPArValidateAddressService/CallToken#wsdl.interface(CallToken_ptt)"/>
+        <dgm:nodeIcon URI="/oracle/tip/tools/ide/adapters/designtime/adapter/images/RestAdapterService20x20px.png" X="27" Y="4" width="20" height="20"/>
+        <dgm:policyIcon URI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/locked_12x12.png" X="118" Y="8" width="12" height="12"/>
+        <dgm:operations>
+            <dgm:item>GetToken</dgm:item>
+        </dgm:operations>
+    </dgm:gReference>
+    <dgm:gComponent name="EPArValidateAddressService">
+        <dgm:body borderWidth="2" arcRad="20" X="357" Y="130" width="130" height="111">
+            <dgm:borderColor r="69" g="113" b="140"/>
+            <dgm:lightBgColor r="166" g="208" b="230"/>
+            <dgm:darkBgColor r="99" g="162" b="201"/>
+        </dgm:body>
+        <dgm:shadow arcRad="20" X="347" Y="123" width="150" height="127">
+            <dgm:bgColor r="196" g="228" b="240"/>
+        </dgm:shadow>
+        <dgm:inputPort name="client" X="-10" Y="15" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/EPArValidateAddressService#wsdl.interface(EPArValidateAddressService)"/>
+        <dgm:outputPort name="ErrorHandler" X="120" Y="15" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/pcbpel/adapter/jms/Basic/EPArValidateAddressService/ErrorHandler#wsdl.interface(Produce_Message_ptt)"/>
+        <dgm:outputPort name="CallAddressValidationREST" X="120" Y="40" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/EpArAddressValidationRESTAPI/EpArValidateAddressService/CallAddressValidationREST#wsdl.interface(CallAddressValidationREST_ptt)"/>
+        <dgm:outputPort name="CallToken" X="120" Y="65" diameter="20" imageURI="oracle/tip/tools/ide/fabric/resource/image/visuals_rd1/servicereference.png" interface="http://xmlns.oracle.com/PDE/EPArValidateAddressService/CallToken#wsdl.interface(CallToken_ptt)"/>
+        <dgm:nodeIcon URI="/oracle/tip/tools/ide/bpel/shared/plugins/resources/images/soa/process_20x20.png" X="10" Y="4" width="20" height="20"/>
+    </dgm:gComponent>
+    <dgm:gWireLink source="client" target="EPArValidateAddressService/client" width="2">
+        <dgm:gSegment X1="168" Y1="155" X2="347" Y2="155"/>
+        <dgm:baseColor r="153" g="153" b="153"/>
+        <dgm:selectedColor r="49" g="106" b="196"/>
+    </dgm:gWireLink>
+    <dgm:gWireLink source="EPArValidateAddressService/ErrorHandler" target="ErrorHandler" width="2">
+        <dgm:gSegment X1="497" Y1="155" X2="521" Y2="155"/>
+        <dgm:gSegment X1="521" Y1="155" X2="521" Y2="36"/>
+        <dgm:gSegment X1="521" Y1="36" X2="676" Y2="36"/>
+        <dgm:baseColor r="153" g="153" b="153"/>
+        <dgm:selectedColor r="49" g="106" b="196"/>
+    </dgm:gWireLink>
+    <dgm:gWireLink source="EPArValidateAddressService/CallAddressValidationREST" target="CallAddressValidationREST" width="2">
+        <dgm:gSegment X1="497" Y1="180" X2="536" Y2="180"/>
+        <dgm:gSegment X1="536" Y1="180" X2="536" Y2="154"/>
+        <dgm:gSegment X1="536" Y1="154" X2="676" Y2="154"/>
+        <dgm:baseColor r="153" g="153" b="153"/>
+        <dgm:selectedColor r="49" g="106" b="196"/>
+    </dgm:gWireLink>
+    <dgm:gWireLink source="EPArValidateAddressService/CallToken" target="CallToken" width="2">
+        <dgm:gSegment X1="497" Y1="205" X2="521" Y2="205"/>
+        <dgm:gSegment X1="521" Y1="205" X2="521" Y2="272"/>
+        <dgm:gSegment X1="521" Y1="272" X2="676" Y2="272"/>
+        <dgm:baseColor r="153" g="153" b="153"/>
+        <dgm:selectedColor r="49" g="106" b="196"/>
+    </dgm:gWireLink>
+</dgm:gDiagram>

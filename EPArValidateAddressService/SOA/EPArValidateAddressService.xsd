@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://xmlns.edgepark.com/EPArValidateAddress" xmlns:tns="http://xmlns.edgepark.com/EPArValidateAddress" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="ValidateAddressRequestList">
+      <complexType>
+         <sequence>
+            <element minOccurs="0" maxOccurs="unbounded" name="ValidateAddressRequest" type="tns:ValidateAddressRequestType"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="ValidateAddressRequestType">
+      <sequence>
+         <element minOccurs="0" maxOccurs="1" name="uniqueIdentifier" nillable="true" type="string"/>
+         <element minOccurs="0" maxOccurs="1" name="applicationCode" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strAddress1" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strAddress2" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strAddress3" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strCity" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strState" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strZip" type="string"/>
+         <element minOccurs="1" maxOccurs="1" name="strCountry" type="string"/>
+      </sequence>
+   </complexType>
+   <element name="ValidateAddressResponseList">
+      <complexType>
+         <sequence>
+            <element minOccurs="0" maxOccurs="unbounded" name="ValidateAddressResponse" type="tns:ValidateAddressResponseType"/>
+         </sequence>
+      </complexType>
+   </element>
+   <complexType name="ValidateAddressResponseType">
+      <sequence>
+         <element name="uniqueIdentifier" nillable="true" type="string"/>
+         <element name="strAddress1" type="string"/>
+         <element name="strAddress2" type="string"/>
+         <element name="strAddress3" type="string"/>
+         <element name="strCity" type="string"/>
+         <element name="strCounty" type="string"/>
+         <element name="strState" type="string"/>
+         <element name="strZip" type="string"/>
+         <element name="strCountry" type="string"/>
+         <element name="strDPV" type="string"/>
+         <element name="strRecType" type="string"/>
+         <element name="strStatCode" type="string"/>
+         <element name="strMessage" type="string"/>
+         <element name="strRDI" type="string"/>
+      </sequence>
+   </complexType>
+</schema>

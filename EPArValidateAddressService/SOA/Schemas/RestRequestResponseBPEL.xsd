@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org" targetNamespace="http://www.example.org" elementFormDefault="qualified">
+   <xsd:element name="Request">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="Body">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="URIParams">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <xsd:element minOccurs="0" maxOccurs="1" name="applicationCode" type="xsd:string" nillable="true"/>
+                              <xsd:element minOccurs="0" maxOccurs="1" name="TransactionId" type="xsd:string" nillable="true"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="address1" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="address2" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="address3" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="city" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="state" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="postalcode" type="xsd:string"/>
+                              <xsd:element minOccurs="1" maxOccurs="1" name="country" type="xsd:string"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="Response">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="Body">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="validateAddressResponse">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <xsd:element name="address1" type="xsd:string"/>
+                              <xsd:element name="address2" type="xsd:string"/>
+                              <xsd:element name="address3" type="xsd:string"/>
+                              <xsd:element name="city" type="xsd:string"/>
+                              <xsd:element name="state" type="xsd:string"/>
+                              <xsd:element name="zip" type="xsd:string"/>
+                              <xsd:element name="country" type="xsd:string"/>
+                              <xsd:element name="isresidential" type="xsd:string"/>
+                              <xsd:element name="TransactionId" type="xsd:string"/>
+                              <xsd:element name="dpv" type="xsd:integer"/>
+                              <xsd:element name="dpvdesc" type="xsd:string"/>
+                              <xsd:element name="dpvnotesdesc" type="xsd:string"/>
+                              <xsd:element name="correctionsdesc" type="xsd:string"/>
+                              <xsd:element name="countycode" type="xsd:integer"/>
+                              <xsd:element name="countyname" type="xsd:string"/>
+                              <xsd:element name="carrierroute" type="xsd:string"/>
+                              <xsd:element name="errorcode" type="xsd:string"/>
+                              <xsd:element name="errordesc" type="xsd:string"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

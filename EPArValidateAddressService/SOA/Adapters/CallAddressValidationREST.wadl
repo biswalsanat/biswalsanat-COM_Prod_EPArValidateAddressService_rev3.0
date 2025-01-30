@@ -1,0 +1,45 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<application xmlns:soa="http://www.oracle.com/soa/rest" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://xmlns.oracle.com/EpArAddressValidationRESTAPI/EpArValidateAddressService/CallAddressValidationREST" xmlns:ns0="http://www.example.org" xmlns="http://wadl.dev.java.net/2009/02">
+   <doc title="CallAddressValidationREST">RestReference</doc>
+   <grammars>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="http://www.example.org" schemaLocation="../Schemas/RestRequestResponseBPEL.xsd"/>
+        </xsd:schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://xmlns.oracle.com/EpArAddressValidationRESTAPI/EpArValidateAddressService/CallAddressValidationREST" elementFormDefault="qualified">
+            <element name="empty">
+                <complexType/>
+            </element>
+        </schema>
+   </grammars>
+   <resources>
+      <resource path="/corp/restaddressvalidationapi/v2">
+         <method name="GET" soa:wsdlOperation="GetJSONBestMatches">
+            <doc title="GET GetJSONBestMatches">PR_GET_CONSUMER</doc>
+            <request>
+               <param name="applicationCode" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:applicationCode" default="" type="xsd:string"/>
+               <param name="TransactionId" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:TransactionId" default="" type="xsd:string"/>
+               <param name="address1" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:address1" default="" type="xsd:string"/>
+               <param name="address2" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:address2" default="" type="xsd:string"/>
+               <param name="address3" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:address3" default="" type="xsd:string"/>
+               <param name="city" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:city" default="" type="xsd:string"/>
+               <param name="state" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:state" default="" type="xsd:string"/>
+               <param name="postalcode" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:postalcode" default="" type="xsd:string"/>
+               <param name="country" style="query" soa:expression="$msg.request/ns0:Body/ns0:URIParams/ns0:country" default="" type="xsd:string"/>
+            </request>
+            <response status="200">
+               <representation mediaType="application/json" element="cns:Response" xmlns:cns="http://www.example.org"/>
+               <representation mediaType="application/xml" element="cns:Response" xmlns:cns="http://www.example.org"/>
+            </response>
+            <response status="400" soa:wsdlFaultName="fault1"/>
+            <response status="401" soa:wsdlFaultName="fault2"/>
+            <response status="404" soa:wsdlFaultName="fault3"/>
+            <response status="405" soa:wsdlFaultName="fault4"/>
+            <response status="413" soa:wsdlFaultName="fault5"/>
+            <response status="500" soa:wsdlFaultName="fault6"/>
+            <response status="503" soa:wsdlFaultName="fault7"/>
+            <response status="522" soa:wsdlFaultName="fault8"/>
+            <response status="0" soa:wsdlFaultName="fault9"/>
+         </method>
+      </resource>
+   </resources>
+</application>

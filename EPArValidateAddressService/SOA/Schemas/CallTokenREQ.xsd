@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org" targetNamespace="http://www.example.org" elementFormDefault="qualified">
+   <xsd:element name="Req">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="grant_type" type="xsd:string" nillable="true"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="Res">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="refresh_token_expires_in" type="xsd:integer"/>
+            <xsd:element name="api_product_list" type="xsd:string"/>
+            <xsd:element name="api_product_list_json" type="xsd:string"/>
+            <xsd:element name="organization_name" type="xsd:string"/>
+            <xsd:element name="developer.email" type="xsd:string"/>
+            <xsd:element name="token_type" type="xsd:string"/>
+            <xsd:element name="issued_at" type="xsd:integer"/>
+            <xsd:element name="client_id" type="xsd:string"/>
+            <xsd:element name="access_token" type="xsd:string"/>
+            <xsd:element name="application_name" type="xsd:string"/>
+            <xsd:element name="scope"/>
+            <xsd:element name="expires_in" type="xsd:integer"/>
+            <xsd:element name="refresh_count" type="xsd:integer"/>
+            <xsd:element name="status" type="xsd:string"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jdbc-data-source xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/jdbc-data-source http://xmlns.oracle.com/weblogic/jdbc-data-source/1.3/jdbc-data-source.xsd" xmlns="http://xmlns.oracle.com/weblogic/jdbc-data-source">
+   <name>PKMSDev</name>
+   <jdbc-driver-params>
+      <url>jdbc:sqlserver://pkmstest1.corp.rghent.com:1433;databaseName=PKMSDev</url>
+      <driver-name>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver-name>
+      <properties>
+         <property>
+            <name>user</name>
+            <value>PKMS_SOA</value>
+         </property>
+         <property>
+            <name>databaseName</name>
+            <value>PKMSDev</value>
+         </property>
+      </properties>
+      <use-password-indirection>
+      true
+    </use-password-indirection>
+   </jdbc-driver-params>
+   <jdbc-connection-pool-params>
+      <test-table-name>SQL SELECT 1</test-table-name>
+   </jdbc-connection-pool-params>
+   <jdbc-data-source-params>
+      <jndi-name>jdbc/PKMSDevDS</jndi-name>
+      <scope>Application</scope>
+   </jdbc-data-source-params>
+</jdbc-data-source>

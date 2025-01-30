@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions name="EPArValidateAddressService" targetNamespace="http://xmlns.oracle.com/EPArValidateAddressService" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://xmlns.edgepark.com/EPArValidateAddress" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:client="http://xmlns.oracle.com/EPArValidateAddressService">
+   <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://xmlns.edgepark.com/EPArValidateAddress" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:client="http://xmlns.oracle.com/EPArValidateAddressService">
+         <import namespace="http://xmlns.edgepark.com/EPArValidateAddress" schemaLocation="EPArValidateAddressService.xsd"/>
+      </schema>
+   </types>
+   <message name="EPArValidateAddressServiceRequestMessage">
+      <part name="payload" element="ns1:ValidateAddressRequestList"/>
+   </message>
+   <message name="EPArValidateAddressServiceResponseMessage">
+      <part name="payload" element="ns1:ValidateAddressResponseList"/>
+   </message>
+   <portType name="EPArValidateAddressService">
+      <operation name="process">
+         <input message="client:EPArValidateAddressServiceRequestMessage"/>
+         <output message="client:EPArValidateAddressServiceResponseMessage"/>
+      </operation>
+   </portType>
+   <plnk:partnerLinkType name="EPArValidateAddressService">
+      <plnk:role name="EPArValidateAddressServiceProvider">
+         <plnk:portType name="client:EPArValidateAddressService"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+</definitions>

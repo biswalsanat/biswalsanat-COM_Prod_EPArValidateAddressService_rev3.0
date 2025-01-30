@@ -1,0 +1,491 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon May 02 18:04:26 EDT 2011
+  Author:  pagupta
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="EPArValidateAddressService" targetNamespace="http://xmlns.oracle.com/EPArValidateAddressService" xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xp20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath" xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:client="http://xmlns.oracle.com/EPArValidateAddressService" xmlns:ora="http://schemas.oracle.com/xpath/extension" xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions" xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath" xmlns:ns1="http://www.businessobjects.com" xmlns:ehdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.esb.server.headers.ESBHeaderFunctions" xmlns:ns3="http://www.edgepark.com/AddressValidataion" xmlns:ns2="http://xmlns.edgepark.com/EPArValidateAddress" xmlns:bpelx="http://schemas.oracle.com/bpel/extension" xmlns:orcl="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc" xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/jms/Basic/EPArValidateAddressService/ErrorHandler"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:ns5="http://xmlns.edgepark.com/ErrorHandlingProcess/1.0"
+         xmlns:ns6="http://xmlns.oracle.com/AddressValidationREST/EpArValidateAddressService/CallAddressValidationREST"
+         xmlns:ns7="http://www.example.org" xmlns:ess="http://xmlns.oracle.com/scheduler"
+         xmlns:ns8="http://xmlns.oracle.com/EpArAddressValidationRESTAPI/EpArValidateAddressService/CallAddressValidationREST"
+         xmlns:ns9="http://xmlns.oracle.com/PDE/EPArValidateAddressService/CallToken">
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <bpelx:annotation>
+    <bpelx:analysis>
+      <bpelx:property name="wsdlFile">
+        <![CDATA[EPArValidateAddressService.wsdl]]>
+      </bpelx:property>
+    </bpelx:analysis>
+  </bpelx:annotation>
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="client" partnerLinkType="client:EPArValidateAddressService" myRole="EPArValidateAddressServiceProvider"/>
+    <partnerLink name="ErrorHandler" partnerLinkType="ns4:Produce_Message_plt"
+                 partnerRole="Produce_Message_role"/>
+    <partnerLink name="CallAddressValidationREST" partnerLinkType="ns8:CallAddressValidationREST"
+                 partnerRole="CallAddressValidationRESTProvider"/>
+    <partnerLink name="CallToken" partnerLinkType="ns9:CallToken" partnerRole="CallTokenProvider"/>
+  </partnerLinks>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="inputVariable" messageType="client:EPArValidateAddressServiceRequestMessage"/>
+    <variable name="outputVariable" messageType="client:EPArValidateAddressServiceResponseMessage"/>
+    <variable name="receiveAddressValidationRequest" messageType="client:EPArValidateAddressServiceRequestMessage"/>
+    <variable name="replyAddressValidationResponse" messageType="client:EPArValidateAddressServiceResponseMessage"/>
+    <variable name="iterator" type="xsd:integer"/>
+    <variable name="count" type="xsd:integer"/>
+    <variable name="SingleAddressResponse" element="ns2:ValidateAddressResponseList"/>
+    <variable name="xpath" type="xsd:string"/>
+    <variable name="CallErrorHandler_Produce_Message_InputVariable"
+              messageType="ns4:Produce_Message_msg"/>
+    <variable name="applicationCodeVar" type="xsd:string"/>
+    <variable name="InvokeRGHAddressValidation_process_InputVariable"
+              messageType="ns8:GetJSONBestMatches_inputMessage"/>
+    <variable name="InvokeRGHAddressValidation_process_OutputVariable"
+              messageType="ns8:GetJSONBestMatches_outputMessage"/>
+    <variable name="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable"
+              messageType="ns8:GetJSONBestMatches_inputMessage"/>
+    <variable name="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable"
+              messageType="ns8:GetJSONBestMatches_outputMessage"/>
+    <variable name="Invoke_GetToken_InputVariable" messageType="ns9:GetToken_inputMessage"/>
+    <variable name="Invoke_GetToken_OutputVariable" messageType="ns9:GetToken_outputMessage"/>
+  </variables>
+  <faultHandlers>
+    <catchAll>
+      <sequence name="Sequence1">
+        <assign name="AssignErrorData">
+          <copy>
+            <from expression="ora:getCompositeInstanceId()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:Attribute1"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCompositeInstanceId()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:BusinessProcessId1"/>
+          </copy>
+          <copy>
+            <from expression="ora:getCompositeName()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:Attribute2"/>
+          </copy>
+          <copy>
+            <from expression="ora:getComponentName()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:Attribute3"/>
+          </copy>
+          <copy>
+            <from expression="'UniqueIdentifier'"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:Attribute4"/>
+          </copy>
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest/ns2:uniqueIdentifier"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:Attribute5"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultName()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:ErrorCode"/>
+          </copy>
+          <copy>
+            <from expression="ora:getFaultAsString()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:ErrorDescription"/>
+          </copy>
+          <copy>
+            <from expression="'EBS'"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:SystemName"/>
+          </copy>
+          <copy>
+            <from expression="'EPArValidateAddressService'"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:BusinessProcessName"/>
+          </copy>
+          <copy>
+            <from expression="xp20:current-dateTime()"/>
+            <to variable="CallErrorHandler_Produce_Message_InputVariable"
+                part="body"
+                query="/ns5:EPComnErrorDetails/ns5:EPComnErrorDetail/ns5:ErrorDateTime"/>
+          </copy>
+        </assign>
+        <invoke name="CallErrorHandler"
+                inputVariable="CallErrorHandler_Produce_Message_InputVariable"
+                partnerLink="ErrorHandler" portType="ns4:Produce_Message_ptt"
+                operation="Produce_Message" bpelx:invokeAsDetail="no"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="MainProcess">
+    <!-- Receive input from requestor. (Note: This maps to operation defined in EPArValidateAddressService.wsdl) -->
+    <receive name="receiveAddressValidationRequest" partnerLink="client" portType="client:EPArValidateAddressService" operation="process" variable="receiveAddressValidationRequest" createInstance="yes"/>
+    <!-- Generate reply to synchronous request -->
+    <assign name="setCountIterator">
+      <copy>
+        <from expression="''"/>
+        <to variable="applicationCodeVar"/>
+      </copy>
+      <copy bpelx:ignoreMissingFromData="yes">
+        <from expression="bpws:getVariableData('inputVariable','payload','/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[1]/ns2:applicationCode')"/>
+        <to variable="applicationCodeVar"/>
+      </copy>
+      <copy>
+        <from expression="1"/>
+        <to variable="iterator"/>
+      </copy>
+      <copy>
+        <from expression="ora:countNodes('receiveAddressValidationRequest','payload','/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest')"/>
+        <to variable="count"/>
+      </copy>
+    </assign>
+    <assign name="AssignToken">
+      <copy>
+        <from expression='"client_credentials"'/>
+        <to variable="Invoke_GetToken_InputVariable" part="request" query="/ns7:Req/ns7:grant_type"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke" inputVariable="Invoke_GetToken_InputVariable"
+            outputVariable="Invoke_GetToken_OutputVariable" partnerLink="CallToken" portType="ns9:CallToken_ptt"
+            operation="GetToken"/>
+    <while name="While_1" condition="bpws:getVariableData('count') >= bpws:getVariableData('iterator')">
+      <sequence name="WhileLoop">
+         <assign name="setAssignmentIterator">
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:uniqueIdentifier')"/>
+            <to variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:TransactionId"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strAddress1')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:address1"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strAddress2')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:address2"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strAddress3')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:address3"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strCity')"
+                  bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:city"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strState')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:state"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strZip')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:postalcode"/>
+          </copy>
+          <copy>
+            <from expression="concat('/ns2:ValidateAddressRequestList/ns2:ValidateAddressRequest[',bpws:getVariableData('iterator'),']/ns2:strCountry')"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="xpath"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:country"/>
+          </copy>
+          <copy>
+            <from expression="bpws:getVariableData('receiveAddressValidationRequest','payload',bpws:getVariableData('xpath'))"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:uniqueIdentifier"/>
+          </copy>
+        </assign>
+        <switch name="Switch1">
+          <case condition="bpws:getVariableData('applicationCodeVar') = ''">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">
+                  <![CDATA[ApplicationCodeIsBlank]]>
+                </bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="AssignDefaultApplication">
+              <copy>
+                <from expression="'SOA EBS'"/>
+                <to variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable" part="request"
+                    query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:applicationCode"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <assign name="AssignVariable">
+              <copy>
+                <from expression="bpws:getVariableData('applicationCodeVar')"/>
+                <to variable="InvokeRGHAddressValidation_process_InputVariable" part="request"
+                    query="/ns7:Request/ns7:Body/ns7:URIParams/ns7:applicationCode"/>
+              </copy>
+            </assign>
+          </otherwise>
+        </switch>
+        <invoke name="InvokeRESTAddressValidationAPI" partnerLink="CallAddressValidationREST"
+                portType="ns8:CallAddressValidationREST_ptt" operation="GetJSONBestMatches"
+                inputVariable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_InputVariable"
+                outputVariable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable">
+          <bpelx:inputProperty name="rest.binding.http.Authorization"
+                               expression='concat("Bearer"," ",bpws:getVariableData(&apos;Invoke_GetToken_OutputVariable&apos;,&apos;reply&apos;,&apos;/ns7:Res/ns7:access_token&apos;))'/>
+        </invoke>
+        <assign name="assignSingleResponse">
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:address1"/>
+            <to variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strAddress1"/>
+          </copy>
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:TransactionId"/>
+            <to variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:uniqueIdentifier"/>
+          </copy>
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:address2"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strAddress2"/>
+          </copy>
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:address3"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strAddress3"/>
+          </copy>
+          <copy>
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:city"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strCity"/>
+          </copy>
+          <copy>
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:state"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strState"/>
+          </copy>
+          <copy>
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:zip"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strZip"/>
+          </copy>
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:dpv"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strDPV"/>
+          </copy>
+          <copy>
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:country"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strCountry"/>
+          </copy>
+          <copy bpelx:ignoreMissingFromData="yes">
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:countyname"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strCounty"/>
+          </copy>
+          <copy>
+            <from bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"
+                  variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                  query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:errorcode"/>
+            <to bpelx:language="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0" variable="SingleAddressResponse"
+                query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strStatCode"/>
+          </copy>
+        </assign>
+        <switch name="Switch4">
+          <case condition="bpws:getVariableData('InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable','reply','/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:isresidential') = 'FALSE'">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">
+                  <![CDATA[isResidentialFalkse]]>
+                </bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="AssignRDI_N">
+              <copy>
+                <from expression="'N'"/>
+                <to variable="SingleAddressResponse"
+                    query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strRDI"/>
+              </copy>
+            </assign>
+          </case>
+          <case condition="bpws:getVariableData('InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable','reply','/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:isresidential') = 'TRUE'">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">
+                  <![CDATA[isResidentialIsTrue]]>
+                </bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <assign name="AssignRDI_Y">
+              <copy>
+                <from expression="'Y'"/>
+                <to variable="SingleAddressResponse"
+                    query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strRDI"/>
+              </copy>
+            </assign>
+          </case>
+          <otherwise>
+            <assign name="AssignRDI_N">
+              <copy>
+                <from variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                      query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:isresidential"/>
+                <to variable="SingleAddressResponse"
+                    query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strRDI"/>
+              </copy>
+            </assign>
+          </otherwise>
+        </switch>
+        <switch name="Switch3">
+          <case condition="bpws:getVariableData('SingleAddressResponse','/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strDPV') = 'Y'">
+            <bpelx:annotation>
+              <bpelx:general>
+                <bpelx:property name="userLabel">
+                  <![CDATA[strDPVequalToY]]>
+                </bpelx:property>
+              </bpelx:general>
+            </bpelx:annotation>
+            <empty name="doNothing"/>
+          </case>
+          <otherwise>
+            <switch name="Switch2">
+              <case condition="bpws:getVariableData('InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable','reply','/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:errordesc') = ''">
+                <bpelx:annotation>
+                  <bpelx:general>
+                    <bpelx:property name="userLabel">
+                      <![CDATA[ErrorDescNull]]>
+                    </bpelx:property>
+                  </bpelx:general>
+                </bpelx:annotation>
+                <assign name="AssignFromDpvDesc">
+                  <copy>
+                    <from variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                          query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:dpvdesc"/>
+                    <to variable="SingleAddressResponse"
+                        query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strMessage"/>
+                  </copy>
+                </assign>
+              </case>
+              <otherwise>
+                <assign name="AssignFromErrorDesc">
+                  <copy>
+                    <from variable="InvokeRESTAddressValidationAPI_GetJSONBestMatches_OutputVariable" part="reply"
+                          query="/ns7:Response/ns7:Body/ns7:validateAddressResponse/ns7:errordesc"/>
+                    <to variable="SingleAddressResponse"
+                        query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse/ns2:strMessage"/>
+                  </copy>
+                </assign>
+              </otherwise>
+            </switch>
+          </otherwise>
+        </switch>
+        <assign name="incrementIterator">
+           <bpelx:append>
+            <bpelx:from variable="SingleAddressResponse"
+                        query="/ns2:ValidateAddressResponseList/ns2:ValidateAddressResponse"/>
+            <bpelx:to variable="replyAddressValidationResponse" part="payload"
+                      query="/ns2:ValidateAddressResponseList"/>
+          </bpelx:append>
+          <copy>
+            <from expression="bpws:getVariableData('iterator') + 1"/>
+            <to variable="iterator"/>
+          </copy>
+        </assign>
+      </sequence>
+    </while>
+    <reply name="replyOutput" partnerLink="client" portType="client:EPArValidateAddressService" operation="process" variable="replyAddressValidationResponse"/>
+  </sequence>
+</process>
